@@ -8,6 +8,9 @@
     {name:"Cotton Kurta", price:1299, old:null, tag:null, rating:4.5, reviews:88, color:"#E3DEC9", icon:"kurta"},
     {name:"Desk Lamp", price:1150, old:1450, tag:"Sale", rating:4.2, reviews:39, color:"#D7E0D8", icon:"lamp"},
     {name:"Leather Wallet", price:850, old:null, tag:null, rating:4.6, reviews:121, color:"#E6D9C6", icon:"wallet"},
+    {name:"Handloom Cotton Set", price:1890, old:null, tag:"New", rating:4.6, reviews:0, color:"#E5DCCB", icon:"kurta", isArrival:true},
+    {name:"Ceramic Table Lamp", price:1450, old:null, tag:"New", rating:4.5, reviews:0, color:"#D7E0D8", icon:"lamp", isArrival:true},
+    {name:"Recycled Tote Bag", price:780, old:null, tag:"New", rating:4.7, reviews:0, color:"#DCE7DD", icon:"bag", isArrival:true},
   ];
   let products = JSON.parse(localStorage.getItem('merocartProducts') || 'null') || defaultProducts.map(product => ({...product}));
   let supabaseClient = null;
@@ -61,6 +64,16 @@
       const uniqueProducts = new Map();
       data.forEach(row => uniqueProducts.set(row.name, toProduct(row)));
       products = Array.from(uniqueProducts.values());
+      const missingArrivals = defaultProducts.filter(defaultProduct =>
+        defaultProduct.isArrival && !products.some(product => product.name === defaultProduct.name)
+      );
+      if (missingArrivals.length) {
+        const {data: seededArrivals, error: arrivalSeedError} = await supabaseClient
+          .from('products')
+          .insert(missingArrivals.map(toRow))
+          .select();
+        if (!arrivalSeedError && seededArrivals) products.push(...seededArrivals.map(toProduct));
+      }
     } else {
       const {data: seeded, error: seedError} = await supabaseClient.from('products').insert(defaultProducts.map(toRow)).select();
       if (seedError) { console.warn('Supabase catalogue is empty and could not be seeded.', seedError.message); return; }
