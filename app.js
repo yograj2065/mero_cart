@@ -261,7 +261,7 @@
     const {data, error} = product.id
       ? await supabaseClient.from('products').update(toRow(product)).eq('id', product.id).select().single()
       : await supabaseClient.from('products').insert(toRow(product)).select().single();
-    if (error) { console.warn('Product was saved locally only.', error.message); return product; }
+    if (error) throw new Error(error.message);
     return toProduct(data);
   }
 
@@ -325,6 +325,8 @@
   });
   productForm.addEventListener('submit', async event => {
     event.preventDefault();
+    const productError = document.getElementById('productError');
+    productError.textContent = '';
     const index = document.getElementById('productIndex').value;
     const product = {
       name: document.getElementById('productName').value.trim(),
@@ -333,9 +335,13 @@
       tag: document.getElementById('productTag').value || null,
       rating: 4.5, reviews: 0, color: '#DCE7DD', icon: document.getElementById('productIcon').value, image: selectedProductImage
     };
-    const savedProduct = await saveProductToCloud(index === '' ? product : {...product, id: products[Number(index)].id});
-    if (index === '') products.push(savedProduct); else products[Number(index)] = savedProduct;
-    saveProducts(); renderProducts(); renderAdminProducts(); resetProductForm();
+    try {
+      const savedProduct = await saveProductToCloud(index === '' ? product : {...product, id: products[Number(index)].id});
+      if (index === '') products.push(savedProduct); else products[Number(index)] = savedProduct;
+      saveProducts(); renderProducts(); renderAdminProducts(); resetProductForm();
+    } catch (error) {
+      productError.textContent = `Could not save to Supabase: ${error.message}`;
+    }
   });
   document.getElementById('productImage').addEventListener('change', event => {
     const file = event.target.files[0];

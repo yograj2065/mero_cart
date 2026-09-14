@@ -1,5 +1,4 @@
 -- Run this once in Supabase Dashboard > SQL Editor.
-create database supabase_setup
 create table if not exists public.products (
   id uuid primary key default gen_random_uuid(),
   name text not null,
@@ -37,3 +36,10 @@ drop policy if exists "Anyone can delete products for demo admin" on public.prod
 create policy "Anyone can delete products for demo admin"
   on public.products for delete
   using (true);
+
+do $$
+begin
+  alter publication supabase_realtime add table public.products;
+exception
+  when duplicate_object then null;
+end $$;
