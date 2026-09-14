@@ -378,7 +378,7 @@
       old: Number(document.getElementById('productOld').value) || null,
       tag: document.getElementById('productTag').value || null,
       rating: 4.5, reviews: 0, color: '#DCE7DD', icon: document.getElementById('productIcon').value, image: selectedProductImage,
-      isArrival: document.getElementById('productArrival').checked
+      isArrival: document.getElementById('productArrival').checked || document.getElementById('productTag').value === 'New Arrivals'
     };
     try {
       const savedProduct = await saveProductToCloud(index === '' ? product : {...product, id: products[Number(index)].id});
