@@ -140,7 +140,9 @@
   };
 
   let cartItems = JSON.parse(localStorage.getItem('merocartCart') || '[]');
+  let wishlist = JSON.parse(localStorage.getItem('merocartWishlist') || '[]');
   const grid = document.getElementById('prodGrid');
+  function saveWishlist(){ localStorage.setItem('merocartWishlist', JSON.stringify(wishlist)); }
   function renderProducts(){
     grid.innerHTML = '';
     products.forEach((p) => {
@@ -149,7 +151,7 @@
     card.innerHTML = `
       <div class="prod-img" style="background:${p.color}">
         ${p.tag ? `<span class="prod-tag ${p.tag==='Sale'?'sale':p.tag==='Offer'?'offer':''}">${p.tag}</span>` : ''}
-        <div class="heart" data-liked="false"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.1C.4 8.6 2 5 5.6 5 8 5 9.6 6.4 12 9c2.4-2.6 4-4 6.4-4C22 5 23.6 8.6 22 11.9 19.5 16.4 12 21 12 21Z"/></svg></div>
+        <button class="heart${wishlist.includes(p.name) ? ' liked' : ''}" data-liked="${wishlist.includes(p.name)}" type="button" aria-label="${wishlist.includes(p.name) ? 'Remove from wishlist' : 'Save to wishlist'}"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.1C.4 8.6 2 5 5.6 5 8 5 9.6 6.4 12 9c2.4-2.6 4-4 6.4-4C22 5 23.6 8.6 22 11.9 19.5 16.4 12 21 12 21Z"/></svg></button>
         ${p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;">` : productIconMarkup({...p}, '')}
       </div>
       <div class="prod-body">
@@ -168,7 +170,12 @@
 
     card.querySelector('.heart').addEventListener('click', (e) => {
       const h = e.currentTarget;
-      h.classList.toggle('liked');
+      const isSaved = wishlist.includes(p.name);
+      wishlist = isSaved ? wishlist.filter(name => name !== p.name) : [...wishlist, p.name];
+      saveWishlist();
+      h.classList.toggle('liked', !isSaved);
+      h.dataset.liked = String(!isSaved);
+      h.setAttribute('aria-label', !isSaved ? 'Remove from wishlist' : 'Save to wishlist');
     });
 
     card.querySelector('.add-btn').addEventListener('click', (e) => {

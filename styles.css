@@ -276,11 +276,14 @@
   .prod-tag.sale{background:var(--orange);}
   .prod-tag.offer{background:var(--orange);}
   .heart{
+    border:0;
+    cursor:pointer;
     position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;
     background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;
     opacity:0;transform:scale(.8);transition:opacity .2s ease, transform .2s ease;
   }
   .prod-card:hover .heart{opacity:1;transform:scale(1);}
+  .heart.liked{opacity:1;transform:scale(1);}
   .heart svg{width:15px;height:15px;stroke:var(--charcoal);fill:none;}
   .heart.liked svg{fill:var(--orange);stroke:var(--orange);}
   .prod-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1;}
