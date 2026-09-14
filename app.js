@@ -1,13 +1,4 @@
   // ---- Product data ----
-  const orderDate = document.getElementById('orderDate');
-  if (orderDate) {
-    orderDate.textContent = new Intl.DateTimeFormat(undefined, {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric'
-    }).format(new Date());
-  }
-
   const defaultProducts = [
     {name:"Trail Sneakers", price:1799, old:null, tag:"New", rating:4.6, reviews:142, color:"#EAE3D0", icon:"shoe"},
     {name:"Handwoven Tote", price:640, old:850, tag:"Sale", rating:4.4, reviews:96, color:"#DCE7DD", icon:"bag"},
@@ -273,7 +264,15 @@
     const paymentInstruction = paymentMethod === 'Online eSewa'
       ? '\nPlease pay via the eSewa QR on the website and send the payment screenshot here.'
       : '\nI will pay by cash when the order is delivered.';
-    const message = cartItems.length ? `Hi MeroCart, I would like to order:\n${cartItems.map(item => `• ${item.name} x${item.quantity} - Rs. ${item.price * item.quantity}`).join('\n')}\n\nTotal: Rs. ${totalPrice}\nPayment method: ${paymentMethod}${paymentInstruction}` : 'Hi MeroCart, I would like to place an order.';
+    const orderDateTime = new Intl.DateTimeFormat(undefined, {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit'
+    }).format(new Date());
+    const message = cartItems.length ? `Hi MeroCart, I would like to order:\n${cartItems.map(item => `• ${item.name} x${item.quantity} - Rs. ${item.price * item.quantity}`).join('\n')}\n\nTotal: Rs. ${totalPrice}\nPayment method: ${paymentMethod}\nOrder date: ${orderDateTime}${paymentInstruction}` : 'Hi MeroCart, I would like to place an order.';
     cartOrderEl.href = `https://wa.me/9779807919525?text=${encodeURIComponent(message)}`;
     cartPaymentNoteEl.textContent = paymentMethod === 'Online eSewa'
       ? 'Pay via the eSewa QR, then send the screenshot on WhatsApp.'
