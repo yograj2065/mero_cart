@@ -240,6 +240,10 @@
   const cartItemsEl = document.getElementById('cartItems');
   const cartTotalPriceEl = document.getElementById('cartTotalPrice');
   const cartOrderEl = document.getElementById('cartOrder');
+  const paymentModal = document.getElementById('paymentModal');
+  const paymentModalClose = document.getElementById('paymentModalClose');
+  const paymentProceed = document.getElementById('paymentProceed');
+  let paymentCountdown;
   const cartPaymentMethodEl = document.getElementById('cartPaymentMethod');
   const cartPaymentNoteEl = document.getElementById('cartPaymentNote');
   const savedPaymentMethod = localStorage.getItem('merocartPaymentMethod');
@@ -277,6 +281,43 @@
   cartPaymentMethodEl.addEventListener('change', () => {
     localStorage.setItem('merocartPaymentMethod', cartPaymentMethodEl.value);
     renderCart();
+  });
+  function closePaymentModal(){
+    paymentModal.classList.remove('open');
+    paymentModal.setAttribute('aria-hidden', 'true');
+    window.clearInterval(paymentCountdown);
+  }
+  function openPaymentModal(){
+    paymentModal.classList.add('open');
+    paymentModal.setAttribute('aria-hidden', 'false');
+    paymentProceed.disabled = true;
+    let remaining = 5;
+    paymentProceed.textContent = `Wait ${remaining} seconds`;
+    window.clearInterval(paymentCountdown);
+    paymentCountdown = window.setInterval(() => {
+      remaining -= 1;
+      if (remaining > 0) {
+        paymentProceed.textContent = `Wait ${remaining} seconds`;
+        return;
+      }
+      window.clearInterval(paymentCountdown);
+      paymentProceed.disabled = false;
+      paymentProceed.textContent = 'Proceed to WhatsApp';
+    }, 1000);
+  }
+  cartOrderEl.addEventListener('click', event => {
+    if (cartPaymentMethodEl.value !== 'Online eSewa') return;
+    event.preventDefault();
+    if (!cartItems.length) return;
+    openPaymentModal();
+  });
+  paymentProceed.addEventListener('click', () => {
+    window.open(cartOrderEl.href, '_blank', 'noopener');
+    closePaymentModal();
+  });
+  paymentModalClose.addEventListener('click', closePaymentModal);
+  paymentModal.addEventListener('click', event => {
+    if (event.target === paymentModal) closePaymentModal();
   });
   document.getElementById('cartIcon').addEventListener('click', event => { event.preventDefault(); cartOverlay.classList.add('open'); cartOverlay.setAttribute('aria-hidden', 'false'); });
   document.getElementById('cartClose').addEventListener('click', () => { cartOverlay.classList.remove('open'); cartOverlay.setAttribute('aria-hidden', 'true'); });

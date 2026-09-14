@@ -353,6 +353,18 @@
   </aside>
 </div>
 
+<div class="payment-modal-overlay" id="paymentModal" aria-hidden="true">
+  <div class="payment-modal" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle">
+    <button class="payment-modal-close" id="paymentModalClose" type="button" aria-label="Close payment dialog">&times;</button>
+    <h2 id="paymentModalTitle">Pay with eSewa</h2>
+    <p>Scan this QR code or download it, complete payment, then continue to WhatsApp.</p>
+    <img class="payment-modal-qr" src="esewa-qr.png" alt="eSewa payment QR code">
+    <a class="btn btn-outline payment-download" href="esewa-qr.png" download="esewa-qr.png">Download QR code</a>
+    <button class="btn btn-whatsapp payment-proceed" id="paymentProceed" type="button" disabled>Wait 5 seconds</button>
+    <p class="payment-modal-note">After paying, send your payment screenshot on WhatsApp.</p>
+  </div>
+</div>
+
 <!-- Admin area -->
 <div class="admin-overlay" id="adminOverlay" aria-hidden="true">
   <div class="admin-modal">

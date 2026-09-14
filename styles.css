@@ -470,6 +470,16 @@
   .qr-only-panel h3{font-size:22px;color:var(--green-deep);margin:0 0 7px;}
   .qr-only-panel p{font-size:13px;color:#6D675A;margin:0 0 18px;}
   .qr-only-panel .payment-qr{max-width:300px;margin:0 auto;background:#1D2733;padding:12px;}
+  .payment-modal-overlay{position:fixed;inset:0;z-index:120;background:rgba(21,42,29,.72);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:18px;}
+  .payment-modal-overlay.open{display:flex;}
+  .payment-modal{position:relative;width:min(390px,100%);background:var(--cream);border-radius:16px;padding:26px;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.3);}
+  .payment-modal h2{color:var(--green-deep);margin:0 0 7px;}
+  .payment-modal p{color:#6D675A;font-size:13px;line-height:1.5;margin:0 0 15px;}
+  .payment-modal-qr{display:block;width:min(260px,100%);margin:0 auto 15px;border-radius:8px;background:#1D2733;padding:8px;}
+  .payment-modal-close{position:absolute;top:10px;right:13px;border:0;background:transparent;color:var(--green-deep);font-size:25px;line-height:1;}
+  .payment-download,.payment-proceed{width:100%;justify-content:center;margin-top:8px;}
+  .payment-proceed:disabled{opacity:.6;cursor:wait;}
+  .payment-modal-note{margin-top:12px !important;margin-bottom:0 !important;font-size:11px !important;}
 
   /* ---------- Admin area ---------- */
   .admin-link{color:#D7E3D7 !important;font-weight:700 !important;}
