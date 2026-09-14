@@ -63,6 +63,17 @@
       </div>`).join('') : '<div class="cart-empty">New arrivals will appear here soon.</div>';
   }
 
+  function renderOffers(){
+    const offersGrid = document.getElementById('offersGrid');
+    if (!offersGrid) return;
+    const offers = products.filter(product => product.tag === 'Offer');
+    offersGrid.innerHTML = offers.length ? offers.map(product => `
+      <div class="arrival-card${product.image ? ' has-image' : ''}"${product.image ? ` style="background-image:url('${product.image}')"` : ''}>
+        ${product.image ? '' : productIconMarkup(product, 'arrival-icon')}
+        <div class="arr-label">${product.name} — Rs. ${product.price.toLocaleString()}</div>
+      </div>`).join('') : '<div class="cart-empty">Offers and combos will appear here soon.</div>';
+  }
+
   async function loadSharedProducts(){
     if (!supabaseClient) return;
     const {data, error} = await supabaseClient.from('products').select('*').order('created_at');
@@ -88,6 +99,8 @@
     }
     localStorage.setItem('merocartProducts', JSON.stringify(products));
     renderProducts();
+    renderArrivals();
+    renderOffers();
     renderAdminProducts();
   }
 
@@ -105,6 +118,7 @@
           saveProducts();
           renderProducts();
           renderArrivals();
+          renderOffers();
           renderAdminProducts();
           renderArrivals();
         })
@@ -134,7 +148,7 @@
     card.className = 'prod-card';
     card.innerHTML = `
       <div class="prod-img" style="background:${p.color}">
-        ${p.tag ? `<span class="prod-tag ${p.tag==='Sale'?'sale':''}">${p.tag}</span>` : ''}
+        ${p.tag ? `<span class="prod-tag ${p.tag==='Sale'?'sale':p.tag==='Offer'?'offer':''}">${p.tag}</span>` : ''}
         <div class="heart" data-liked="false"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.1C.4 8.6 2 5 5.6 5 8 5 9.6 6.4 12 9c2.4-2.6 4-4 6.4-4C22 5 23.6 8.6 22 11.9 19.5 16.4 12 21 12 21Z"/></svg></div>
         ${p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;">` : productIconMarkup({...p}, '')}
       </div>
@@ -173,6 +187,8 @@
     });
   }
   renderProducts();
+  renderArrivals();
+  renderOffers();
 
   // ---- Walking cat: strolls along the first row of products, highlighting each ----
   function initCatWalk(){
@@ -388,7 +404,7 @@
     try {
       const savedProduct = await saveProductToCloud(index === '' ? product : {...product, id: products[Number(index)].id});
       if (index === '') products.push(savedProduct); else products[Number(index)] = savedProduct;
-      saveProducts(); renderProducts(); renderArrivals(); renderAdminProducts(); resetProductForm();
+      saveProducts(); renderProducts(); renderArrivals(); renderOffers(); renderAdminProducts(); resetProductForm();
     } catch (error) {
       productError.textContent = `Could not save to Supabase: ${error.message}`;
     } finally {
@@ -447,7 +463,7 @@
     if (deleteIndex !== undefined && window.confirm(`Delete ${products[Number(deleteIndex)].name}?`)) {
       const product = products[Number(deleteIndex)];
       if (supabaseClient && product.id) await supabaseClient.from('products').delete().eq('id', product.id);
-      products.splice(Number(deleteIndex), 1); saveProducts(); renderProducts(); renderArrivals(); renderAdminProducts(); resetProductForm();
+      products.splice(Number(deleteIndex), 1); saveProducts(); renderProducts(); renderArrivals(); renderOffers(); renderAdminProducts(); resetProductForm();
     }
   });
 

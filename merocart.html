@@ -29,6 +29,7 @@
       <a href="#categories">Categories</a>
       <a href="#featured">Shop</a>
       <a href="#arrivals">New Arrivals</a>
+      <a href="#offers">Offers</a>
       <a href="#whatsapp">Order via WhatsApp</a>
       <a href="#payment">Payment</a>
     </nav>
@@ -49,6 +50,7 @@
     <a href="#categories">Categories</a>
     <a href="#featured">Shop</a>
     <a href="#arrivals">New Arrivals</a>
+    <a href="#offers">Offers</a>
     <a href="#whatsapp">Order via WhatsApp</a>
     <a href="#payment">Payment</a>
   </div>
@@ -210,6 +212,18 @@
   </div>
 </section>
 
+<section id="offers">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <h2>Offers &amp; combos</h2>
+        <p style="font-size:14.5px;color:#4A463E;margin:8px 0 0;">Special offers and bundle deals highlighted for you.</p>
+      </div>
+    </div>
+    <div class="arrivals-grid reveal" id="offersGrid"></div>
+  </div>
+</section>
+
 <section id="payment">
   <div class="wrap">
     <div class="section-head reveal">
@@ -359,7 +373,7 @@
             <input type="hidden" id="productIndex" value="">
             <input id="productName" placeholder="Product name" required>
             <div class="form-row"><input id="productPrice" type="number" min="0" placeholder="Price (Rs.)" required><input id="productOld" type="number" min="0" placeholder="Old price (optional)"></div>
-            <select id="productTag"><option value="">No tag</option><option value="New">New</option><option value="Sale">Sale</option><option value="New Arrivals">New Arrivals</option></select>
+            <select id="productTag"><option value="">No tag</option><option value="New">New</option><option value="Sale">Sale</option><option value="New Arrivals">New Arrivals</option><option value="Offer">Offer / Combo</option></select>
             <select id="productIcon"><option value="shoe">Shoe icon</option><option value="bag">Bag icon</option><option value="kettle">Kettle icon</option><option value="buds">Earbuds icon</option><option value="mug">Mug icon</option><option value="kurta">Kurta icon</option><option value="lamp">Lamp icon</option><option value="wallet">Wallet icon</option></select>
             <div class="admin-icon-upload"><label for="productIconFile">Icon (optional)</label><input id="productIconFile" type="file" accept="image/*"></div>
             <div class="admin-image-upload"><input id="productImage" type="file" accept="image/*"><img class="admin-image-preview" id="productImagePreview" alt="Selected product preview"></div>
