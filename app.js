@@ -41,6 +41,7 @@
       color: product.color || '#DCE7DD',
       icon: product.icon || 'bag',
       image: product.image || null
+      ,image2: product.image2 || null
       ,      is_arrival: product.tag === 'New Arrivals'
     };
   }
@@ -153,6 +154,7 @@
         ${p.tag ? `<span class="prod-tag ${p.tag==='Sale'?'sale':p.tag==='Offer'?'offer':''}">${p.tag}</span>` : ''}
         <button class="heart${wishlist.includes(p.name) ? ' liked' : ''}" data-liked="${wishlist.includes(p.name)}" type="button" aria-label="${wishlist.includes(p.name) ? 'Remove from wishlist' : 'Save to wishlist'}"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.1C.4 8.6 2 5 5.6 5 8 5 9.6 6.4 12 9c2.4-2.6 4-4 6.4-4C22 5 23.6 8.6 22 11.9 19.5 16.4 12 21 12 21Z"/></svg></button>
         ${p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;">` : productIconMarkup({...p}, '')}
+        ${p.image2 ? `<img class="prod-image-second" src="${p.image2}" alt="${p.name} alternate view">` : ''}
       </div>
       <div class="prod-body">
         <div class="name">${p.name}</div>
@@ -374,6 +376,7 @@
   const adminProductList = document.getElementById('adminProductList');
   const productForm = document.getElementById('productForm');
   let selectedProductImage = null;
+  let selectedProductImage2 = null;
   let selectedProductIcon = null;
 
   function saveProducts(){
@@ -384,6 +387,7 @@
         const lightweightProducts = products.map(product => ({
           ...product,
           image: null,
+          image2: null,
           icon: product.icon && product.icon.startsWith('data:image/') ? 'bag' : product.icon
         }));
         localStorage.setItem('merocartProducts', JSON.stringify(lightweightProducts));
@@ -406,10 +410,16 @@
   function resetProductForm(){
     productForm.reset();
     selectedProductImage = null;
+    selectedProductImage2 = null;
     selectedProductIcon = null;
     const imagePreview = document.getElementById('productImagePreview');
     imagePreview.removeAttribute('src');
     imagePreview.classList.remove('visible');
+    const imageSecondPreview = document.getElementById('productImageSecondPreview');
+    imageSecondPreview.removeAttribute('src');
+    imageSecondPreview.classList.remove('visible');
+    document.getElementById('productImage').value = '';
+    document.getElementById('productImageSecond').value = '';
     document.getElementById('productIconFile').value = '';
     document.getElementById('productIndex').value = '';
     document.getElementById('adminFormTitle').textContent = 'Add product';
@@ -469,10 +479,11 @@
       price: Number(document.getElementById('productPrice').value),
       old: Number(document.getElementById('productOld').value) || null,
       tag: document.getElementById('productTag').value || null,
-      rating: 4.5, reviews: 0, color: '#DCE7DD',       icon: selectedProductIcon || document.getElementById('productIcon').value, image: selectedProductImage,
+      rating: 4.5, reviews: 0, color: '#DCE7DD',       icon: selectedProductIcon || document.getElementById('productIcon').value, image: selectedProductImage, image2: selectedProductImage2,
       isArrival: document.getElementById('productTag').value === 'New Arrivals'
     };
     try {
+      if (index === '' && !selectedProductImage) throw new Error('Please choose at least one product image.');
       const savedProduct = await saveProductToCloud(index === '' ? product : {...product, id: products[Number(index)].id});
       if (index === '') products.push(savedProduct); else products[Number(index)] = savedProduct;
       saveProducts(); renderProducts(); renderArrivals(); renderOffers(); renderAdminProducts(); resetProductForm();
@@ -491,6 +502,18 @@
       selectedProductImage = reader.result;
       const imagePreview = document.getElementById('productImagePreview');
       imagePreview.src = selectedProductImage;
+      imagePreview.classList.add('visible');
+    });
+    reader.readAsDataURL(file);
+  });
+  document.getElementById('productImageSecond').addEventListener('change', event => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+      selectedProductImage2 = reader.result;
+      const imagePreview = document.getElementById('productImageSecondPreview');
+      imagePreview.src = selectedProductImage2;
       imagePreview.classList.add('visible');
     });
     reader.readAsDataURL(file);
@@ -525,9 +548,13 @@
         document.getElementById('productIcon').value = product.icon;
       }
       selectedProductImage = product.image || null;
+      selectedProductImage2 = product.image2 || null;
       const imagePreview = document.getElementById('productImagePreview');
       if (selectedProductImage) { imagePreview.src = selectedProductImage; imagePreview.classList.add('visible'); }
       else { imagePreview.removeAttribute('src'); imagePreview.classList.remove('visible'); }
+      const imageSecondPreview = document.getElementById('productImageSecondPreview');
+      if (selectedProductImage2) { imageSecondPreview.src = selectedProductImage2; imageSecondPreview.classList.add('visible'); }
+      else { imageSecondPreview.removeAttribute('src'); imageSecondPreview.classList.remove('visible'); }
       document.getElementById('adminFormTitle').textContent = 'Edit product';
       document.getElementById('productSubmit').textContent = 'Save changes';
     }

@@ -516,6 +516,9 @@
   .admin-form .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .admin-image-upload{border:1px dashed var(--line);border-radius:8px;padding:12px;background:#FBF9F3;}
   .admin-image-upload input{padding:0;border:0;background:transparent;font-size:12px;}
+  .admin-image-upload label{display:block;color:var(--green-deep);font-size:12px;font-weight:700;margin-bottom:8px;}
+  .admin-image-previews{display:flex;gap:8px;}
+  .prod-image-second{position:absolute;right:8px;bottom:8px;width:42px;height:42px;border:3px solid white;border-radius:6px;object-fit:cover;box-shadow:0 2px 7px rgba(0,0,0,.18);}
   .admin-image-preview{display:none;width:70px;height:70px;object-fit:cover;border-radius:7px;margin-top:10px;border:1px solid var(--line);}
   .admin-image-preview.visible{display:block;}
   .admin-check{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--green-deep);}

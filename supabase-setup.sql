@@ -10,11 +10,13 @@ create table if not exists public.products (
   color text default '#DCE7DD',
   icon text default 'bag',
   image text,
+  image2 text,
   is_arrival boolean not null default false,
   created_at timestamptz not null default now()
 );
 
 alter table public.products add column if not exists is_arrival boolean not null default false;
+alter table public.products add column if not exists image2 text;
 update public.products set tag = 'New Arrivals', is_arrival = true where is_arrival = true;
 update public.products set is_arrival = (tag = 'New Arrivals');
 
