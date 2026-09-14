@@ -10,8 +10,12 @@ create table if not exists public.products (
   color text default '#DCE7DD',
   icon text default 'bag',
   image text,
+  is_arrival boolean not null default false,
   created_at timestamptz not null default now()
 );
+
+alter table public.products add column if not exists is_arrival boolean not null default false;
+update public.products set is_arrival = true where tag = 'New' and is_arrival = false;
 
 alter table public.products enable row level security;
 

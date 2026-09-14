@@ -23,7 +23,7 @@
   }
 
   function toProduct(row){
-    return {...row, old: row.old_price ?? null};
+    return {...row, old: row.old_price ?? null, isArrival: row.is_arrival === undefined ? row.tag === 'New' : Boolean(row.is_arrival)};
   }
 
   function toRow(product){
@@ -38,7 +38,19 @@
       color: product.color || '#DCE7DD',
       icon: product.icon || 'bag',
       image: product.image || null
+      ,is_arrival: Boolean(product.isArrival)
     };
+  }
+
+  function renderArrivals(){
+    const arrivalsGrid = document.getElementById('arrivalsGrid');
+    if (!arrivalsGrid) return;
+    const arrivals = products.filter(product => product.isArrival);
+    arrivalsGrid.innerHTML = arrivals.length ? arrivals.map(product => `
+      <div class="arrival-card${product.image ? ' has-image' : ''}"${product.image ? ` style="background-image:url('${product.image}')"` : ''}>
+        ${product.image ? '' : `<svg class="arrival-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">${icons[product.icon] || icons.bag}</svg>`}
+        <div class="arr-label">${product.name} — Rs. ${product.price.toLocaleString()}</div>
+      </div>`).join('') : '<div class="cart-empty">New arrivals will appear here soon.</div>';
   }
 
   async function loadSharedProducts(){
@@ -72,7 +84,9 @@
           if (payload.eventType === 'DELETE') products = products.filter(product => product.id !== payload.old.id);
           saveProducts();
           renderProducts();
+          renderArrivals();
           renderAdminProducts();
+          renderArrivals();
         })
         .subscribe();
     } catch (error) {
@@ -291,7 +305,7 @@
   function renderAdminProducts(){
     adminProductList.innerHTML = products.map((product, index) => `
       <div class="admin-product">
-        <div class="admin-product-info"><strong>${product.name}</strong><span>Rs. ${product.price.toLocaleString()}${product.tag ? ` · ${product.tag}` : ''}</span></div>
+        <div class="admin-product-info"><strong>${product.name}</strong><span>Rs. ${product.price.toLocaleString()}${product.tag ? ` · ${product.tag}` : ''}${product.isArrival ? ' · New Arrivals' : ''}</span></div>
         <div class="admin-product-actions"><button type="button" data-edit="${index}">Edit</button><button type="button" data-delete="${index}">Delete</button></div>
       </div>`).join('');
     document.getElementById('adminProductCount').textContent = products.length;
@@ -319,6 +333,7 @@
     if (username === 'yog' && password === 'yograj@123') {
       adminLoginForm.hidden = true;
       adminDashboard.hidden = false;
+      renderArrivals();
       renderAdminProducts();
       resetProductForm();
     } else {
@@ -333,7 +348,7 @@
       const {data} = await supabaseClient.from('products').insert(defaultProducts.map(toRow)).select();
       products = data ? data.map(toProduct) : defaultProducts.map(product => ({...product}));
     } else products = defaultProducts.map(product => ({...product}));
-    saveProducts(); renderProducts(); renderAdminProducts(); resetProductForm();
+    saveProducts(); renderProducts(); renderArrivals(); renderAdminProducts(); resetProductForm();
   });
   productForm.addEventListener('submit', async event => {
     event.preventDefault();
@@ -349,12 +364,13 @@
       price: Number(document.getElementById('productPrice').value),
       old: Number(document.getElementById('productOld').value) || null,
       tag: document.getElementById('productTag').value || null,
-      rating: 4.5, reviews: 0, color: '#DCE7DD', icon: document.getElementById('productIcon').value, image: selectedProductImage
+      rating: 4.5, reviews: 0, color: '#DCE7DD', icon: document.getElementById('productIcon').value, image: selectedProductImage,
+      isArrival: document.getElementById('productArrival').checked
     };
     try {
       const savedProduct = await saveProductToCloud(index === '' ? product : {...product, id: products[Number(index)].id});
       if (index === '') products.push(savedProduct); else products[Number(index)] = savedProduct;
-      saveProducts(); renderProducts(); renderAdminProducts(); resetProductForm();
+      saveProducts(); renderProducts(); renderArrivals(); renderAdminProducts(); resetProductForm();
     } catch (error) {
       productError.textContent = `Could not save to Supabase: ${error.message}`;
     } finally {
@@ -385,6 +401,7 @@
       document.getElementById('productOld').value = product.old || '';
       document.getElementById('productTag').value = product.tag || '';
       document.getElementById('productIcon').value = product.icon;
+        document.getElementById('productArrival').checked = Boolean(product.isArrival);
       selectedProductImage = product.image || null;
       const imagePreview = document.getElementById('productImagePreview');
       if (selectedProductImage) { imagePreview.src = selectedProductImage; imagePreview.classList.add('visible'); }
@@ -395,7 +412,7 @@
     if (deleteIndex !== undefined && window.confirm(`Delete ${products[Number(deleteIndex)].name}?`)) {
       const product = products[Number(deleteIndex)];
       if (supabaseClient && product.id) await supabaseClient.from('products').delete().eq('id', product.id);
-      products.splice(Number(deleteIndex), 1); saveProducts(); renderProducts(); renderAdminProducts(); resetProductForm();
+      products.splice(Number(deleteIndex), 1); saveProducts(); renderProducts(); renderArrivals(); renderAdminProducts(); resetProductForm();
     }
   });
 

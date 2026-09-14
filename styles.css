@@ -383,17 +383,12 @@
 
   /* ---------- New Arrivals ---------- */
   .arrivals-grid{
-    display:grid;grid-template-columns:1.3fr 1fr;gap:20px;
+    display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
   }
-  .arrivals-grid .big{
-    border-radius:16px;background:linear-gradient(160deg,#E9E1CB,#D9CFAE);
-    position:relative;overflow:hidden;min-height:380px;display:flex;align-items:flex-end;padding:24px;
-  }
-  .arrivals-grid .small-stack{display:flex;flex-direction:column;gap:20px;}
-  .arrivals-grid .small{
-    border-radius:16px;background:linear-gradient(160deg,#DCE7DD,#C7D9C9);
-    min-height:180px;position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:20px;
-  }
+  .arrival-card{border-radius:16px;min-height:240px;position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:20px;background:linear-gradient(160deg,#DCE7DD,#C7D9C9);}
+  .arrival-card.has-image{background-size:cover;background-position:center;}
+  .arrival-card .arrival-icon{position:absolute;width:130px;height:130px;top:18px;right:18px;color:#8FAE94;opacity:.5;}
+  .arrival-card .arr-label{position:relative;z-index:1;}
   .arr-label{
     background:rgba(255,255,255,0.92);border-radius:10px;padding:10px 14px;
     font-size:13px;font-weight:700;color:var(--green-deep);
@@ -507,6 +502,8 @@
   .admin-image-upload input{padding:0;border:0;background:transparent;font-size:12px;}
   .admin-image-preview{display:none;width:70px;height:70px;object-fit:cover;border-radius:7px;margin-top:10px;border:1px solid var(--line);}
   .admin-image-preview.visible{display:block;}
+  .admin-check{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--green-deep);}
+  .admin-check input{width:16px;height:16px;accent-color:var(--green-deep);}
   .admin-form button{margin-top:5px;}
   .admin-product-list{display:flex;flex-direction:column;gap:8px;}
   .admin-product{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #EEE9DE;}

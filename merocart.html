@@ -251,22 +251,7 @@
       <h2>New arrivals</h2>
       <a href="#" class="viewall">View all →</a>
     </div>
-    <div class="arrivals-grid reveal">
-      <div class="big">
-        <svg class="arr-icon" style="width:160px;height:160px;top:20px;right:20px;color:#B7AC85" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M4 4h16v16H4z"/><path d="M4 10h16M10 4v16"/></svg>
-        <div class="arr-label">Handloom Cotton Set — Rs. 1,850</div>
-      </div>
-      <div class="small-stack">
-        <div class="small">
-          <svg class="arr-icon" style="width:110px;height:110px;top:10px;right:10px;color:#8FAE94" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="9"/></svg>
-          <div class="arr-label">Ceramic Table Lamp — Rs. 990</div>
-        </div>
-        <div class="small">
-          <svg class="arr-icon" style="width:110px;height:110px;top:10px;right:10px;color:#8FAE94" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M4 20l8-16 8 16z"/></svg>
-          <div class="arr-label">Recycled Tote Bag — Rs. 640</div>
-        </div>
-      </div>
-    </div>
+    <div class="arrivals-grid reveal" id="arrivalsGrid"></div>
   </div>
 </section>
 
@@ -376,6 +361,7 @@
             <div class="form-row"><input id="productPrice" type="number" min="0" placeholder="Price (Rs.)" required><input id="productOld" type="number" min="0" placeholder="Old price (optional)"></div>
             <select id="productTag"><option value="">No tag</option><option value="New">New</option><option value="Sale">Sale</option></select>
             <select id="productIcon"><option value="shoe">Shoe icon</option><option value="bag">Bag icon</option><option value="kettle">Kettle icon</option><option value="buds">Earbuds icon</option><option value="mug">Mug icon</option><option value="kurta">Kurta icon</option><option value="lamp">Lamp icon</option><option value="wallet">Wallet icon</option></select>
+            <label class="admin-check"><input id="productArrival" type="checkbox"> Show in New Arrivals</label>
             <div class="admin-image-upload"><input id="productImage" type="file" accept="image/*"><img class="admin-image-preview" id="productImagePreview" alt="Selected product preview"></div>
             <div class="admin-error" id="productError" role="alert"></div>
             <button class="admin-btn" type="submit" id="productSubmit">Add product</button>
