@@ -340,7 +340,16 @@
   <aside class="cart-drawer" aria-label="Shopping cart">
     <div class="cart-head"><h2>Your cart</h2><button class="cart-close" id="cartClose" aria-label="Close cart">&times;</button></div>
     <div class="cart-items" id="cartItems"></div>
-    <div class="cart-foot"><div class="cart-total"><span>Total</span><span id="cartTotalPrice">Rs. 0</span></div><a class="btn btn-whatsapp cart-order" id="cartOrder" href="#" target="_blank" rel="noopener">Order on WhatsApp</a><p class="cart-note">Your cart details will be prepared in WhatsApp.</p></div>
+    <div class="cart-foot">
+      <div class="cart-total"><span>Total</span><span id="cartTotalPrice">Rs. 0</span></div>
+      <label class="payment-choice-label" for="cartPaymentMethod">Choose payment method</label>
+      <select class="cart-payment-method" id="cartPaymentMethod">
+        <option value="Cash on Delivery">Cash on Delivery</option>
+        <option value="Online eSewa">Online eSewa</option>
+      </select>
+      <a class="btn btn-whatsapp cart-order" id="cartOrder" href="#" target="_blank" rel="noopener">Place order on WhatsApp</a>
+      <p class="cart-note" id="cartPaymentNote">Pay when your order is delivered.</p>
+    </div>
   </aside>
 </div>
 

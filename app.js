@@ -240,6 +240,10 @@
   const cartItemsEl = document.getElementById('cartItems');
   const cartTotalPriceEl = document.getElementById('cartTotalPrice');
   const cartOrderEl = document.getElementById('cartOrder');
+  const cartPaymentMethodEl = document.getElementById('cartPaymentMethod');
+  const cartPaymentNoteEl = document.getElementById('cartPaymentNote');
+  const savedPaymentMethod = localStorage.getItem('merocartPaymentMethod');
+  if (savedPaymentMethod === 'Online eSewa') cartPaymentMethodEl.value = savedPaymentMethod;
   function saveCart(){ localStorage.setItem('merocartCart', JSON.stringify(cartItems)); }
   function renderCart(){
     const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
@@ -252,8 +256,15 @@
         <button class="cart-remove" type="button" data-remove-cart="${index}">Remove</button>
       </div>`).join('') : '<div class="cart-empty">Your cart is empty.</div>';
     cartTotalPriceEl.textContent = `Rs. ${totalPrice.toLocaleString()}`;
-    const message = cartItems.length ? `Hi MeroCart, I would like to order:\n${cartItems.map(item => `• ${item.name} x${item.quantity} - Rs. ${item.price * item.quantity}`).join('\n')}\n\nTotal: Rs. ${totalPrice}` : 'Hi MeroCart, I would like to place an order.';
+    const paymentMethod = cartPaymentMethodEl.value;
+    const paymentInstruction = paymentMethod === 'Online eSewa'
+      ? '\nPlease pay via the eSewa QR on the website and send the payment screenshot here.'
+      : '\nI will pay by cash when the order is delivered.';
+    const message = cartItems.length ? `Hi MeroCart, I would like to order:\n${cartItems.map(item => `• ${item.name} x${item.quantity} - Rs. ${item.price * item.quantity}`).join('\n')}\n\nTotal: Rs. ${totalPrice}\nPayment method: ${paymentMethod}${paymentInstruction}` : 'Hi MeroCart, I would like to place an order.';
     cartOrderEl.href = `https://wa.me/9779807919525?text=${encodeURIComponent(message)}`;
+    cartPaymentNoteEl.textContent = paymentMethod === 'Online eSewa'
+      ? 'Pay via the eSewa QR, then send the screenshot on WhatsApp.'
+      : 'Pay when your order is delivered.';
   }
   function addToCart(product){
     const existing = cartItems.find(item => item.name === product.name);
@@ -263,6 +274,10 @@
     setTimeout(() => cartCountEl.classList.remove('bump'), 250);
   }
   renderCart();
+  cartPaymentMethodEl.addEventListener('change', () => {
+    localStorage.setItem('merocartPaymentMethod', cartPaymentMethodEl.value);
+    renderCart();
+  });
   document.getElementById('cartIcon').addEventListener('click', event => { event.preventDefault(); cartOverlay.classList.add('open'); cartOverlay.setAttribute('aria-hidden', 'false'); });
   document.getElementById('cartClose').addEventListener('click', () => { cartOverlay.classList.remove('open'); cartOverlay.setAttribute('aria-hidden', 'true'); });
   cartOverlay.addEventListener('click', event => { if (event.target === cartOverlay) document.getElementById('cartClose').click(); });
