@@ -15,7 +15,8 @@ create table if not exists public.products (
 );
 
 alter table public.products add column if not exists is_arrival boolean not null default false;
-update public.products set is_arrival = true where tag = 'New' and is_arrival = false;
+update public.products set tag = 'New Arrivals', is_arrival = true where is_arrival = true;
+update public.products set is_arrival = (tag = 'New Arrivals');
 
 alter table public.products enable row level security;
 

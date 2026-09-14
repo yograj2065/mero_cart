@@ -8,9 +8,9 @@
     {name:"Cotton Kurta", price:1299, old:null, tag:null, rating:4.5, reviews:88, color:"#E3DEC9", icon:"kurta"},
     {name:"Desk Lamp", price:1150, old:1450, tag:"Sale", rating:4.2, reviews:39, color:"#D7E0D8", icon:"lamp"},
     {name:"Leather Wallet", price:850, old:null, tag:null, rating:4.6, reviews:121, color:"#E6D9C6", icon:"wallet"},
-    {name:"Handloom Cotton Set", price:1890, old:null, tag:"New", rating:4.6, reviews:0, color:"#E5DCCB", icon:"kurta", isArrival:true},
-    {name:"Ceramic Table Lamp", price:1450, old:null, tag:"New", rating:4.5, reviews:0, color:"#D7E0D8", icon:"lamp", isArrival:true},
-    {name:"Recycled Tote Bag", price:780, old:null, tag:"New", rating:4.7, reviews:0, color:"#DCE7DD", icon:"bag", isArrival:true},
+    {name:"Handloom Cotton Set", price:1890, old:null, tag:"New Arrivals", rating:4.6, reviews:0, color:"#E5DCCB", icon:"kurta", isArrival:true},
+    {name:"Ceramic Table Lamp", price:1450, old:null, tag:"New Arrivals", rating:4.5, reviews:0, color:"#D7E0D8", icon:"lamp", isArrival:true},
+    {name:"Recycled Tote Bag", price:780, old:null, tag:"New Arrivals", rating:4.7, reviews:0, color:"#DCE7DD", icon:"bag", isArrival:true},
   ];
   let products = JSON.parse(localStorage.getItem('merocartProducts') || 'null') || defaultProducts.map(product => ({...product}));
   let supabaseClient = null;
@@ -26,7 +26,7 @@
   }
 
   function toProduct(row){
-    return {...row, old: row.old_price ?? null, isArrival: row.is_arrival === undefined ? row.tag === 'New' : Boolean(row.is_arrival)};
+    return {...row, old: row.old_price ?? null, isArrival: row.tag === 'New Arrivals'};
   }
 
   function toRow(product){
@@ -41,7 +41,7 @@
       color: product.color || '#DCE7DD',
       icon: product.icon || 'bag',
       image: product.image || null
-      ,is_arrival: Boolean(product.isArrival)
+      ,      is_arrival: product.tag === 'New Arrivals'
     };
   }
 
@@ -378,7 +378,7 @@
       old: Number(document.getElementById('productOld').value) || null,
       tag: document.getElementById('productTag').value || null,
       rating: 4.5, reviews: 0, color: '#DCE7DD', icon: document.getElementById('productIcon').value, image: selectedProductImage,
-      isArrival: document.getElementById('productArrival').checked || document.getElementById('productTag').value === 'New Arrivals'
+      isArrival: document.getElementById('productTag').value === 'New Arrivals'
     };
     try {
       const savedProduct = await saveProductToCloud(index === '' ? product : {...product, id: products[Number(index)].id});
@@ -414,7 +414,6 @@
       document.getElementById('productOld').value = product.old || '';
       document.getElementById('productTag').value = product.tag || '';
       document.getElementById('productIcon').value = product.icon;
-        document.getElementById('productArrival').checked = Boolean(product.isArrival);
       selectedProductImage = product.image || null;
       const imagePreview = document.getElementById('productImagePreview');
       if (selectedProductImage) { imagePreview.src = selectedProductImage; imagePreview.classList.add('visible'); }
