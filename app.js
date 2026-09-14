@@ -1,4 +1,13 @@
   // ---- Product data ----
+  const orderDate = document.getElementById('orderDate');
+  if (orderDate) {
+    orderDate.textContent = new Intl.DateTimeFormat(undefined, {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
+    }).format(new Date());
+  }
+
   const defaultProducts = [
     {name:"Trail Sneakers", price:1799, old:null, tag:"New", rating:4.6, reviews:142, color:"#EAE3D0", icon:"shoe"},
     {name:"Handwoven Tote", price:640, old:850, tag:"Sale", rating:4.4, reviews:96, color:"#DCE7DD", icon:"bag"},
