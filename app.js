@@ -253,7 +253,17 @@
   let selectedProductImage = null;
 
   function saveProducts(){
-    localStorage.setItem('merocartProducts', JSON.stringify(products));
+    try {
+      localStorage.setItem('merocartProducts', JSON.stringify(products));
+    } catch (error) {
+      try {
+        const lightweightProducts = products.map(product => ({...product, image: null}));
+        localStorage.setItem('merocartProducts', JSON.stringify(lightweightProducts));
+      } catch (fallbackError) {
+        localStorage.removeItem('merocartProducts');
+      }
+      console.warn('Local cache is full; the complete catalogue remains stored in Supabase.', error);
+    }
   }
 
   async function saveProductToCloud(product){
