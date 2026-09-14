@@ -45,13 +45,20 @@
     };
   }
 
+  function productIconMarkup(product, className = ''){
+    if (product.icon && product.icon.startsWith('data:image/')) {
+      return `<img class="${className}" src="${product.icon}" alt="" style="width:100%;height:100%;object-fit:contain;">`;
+    }
+    return `<svg class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">${icons[product.icon] || icons.bag}</svg>`;
+  }
+
   function renderArrivals(){
     const arrivalsGrid = document.getElementById('arrivalsGrid');
     if (!arrivalsGrid) return;
     const arrivals = products.filter(product => product.isArrival);
     arrivalsGrid.innerHTML = arrivals.length ? arrivals.map(product => `
       <div class="arrival-card${product.image ? ' has-image' : ''}"${product.image ? ` style="background-image:url('${product.image}')"` : ''}>
-        ${product.image ? '' : `<svg class="arrival-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">${icons[product.icon] || icons.bag}</svg>`}
+        ${product.image ? '' : productIconMarkup(product, 'arrival-icon')}
         <div class="arr-label">${product.name} — Rs. ${product.price.toLocaleString()}</div>
       </div>`).join('') : '<div class="cart-empty">New arrivals will appear here soon.</div>';
   }
@@ -129,7 +136,7 @@
       <div class="prod-img" style="background:${p.color}">
         ${p.tag ? `<span class="prod-tag ${p.tag==='Sale'?'sale':''}">${p.tag}</span>` : ''}
         <div class="heart" data-liked="false"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.1C.4 8.6 2 5 5.6 5 8 5 9.6 6.4 12 9c2.4-2.6 4-4 6.4-4C22 5 23.6 8.6 22 11.9 19.5 16.4 12 21 12 21Z"/></svg></div>
-        ${p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;">` : `<svg viewBox="0 0 24 24" fill="none" stroke="#1E3B2C" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">${icons[p.icon]}</svg>`}
+        ${p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;">` : productIconMarkup({...p}, '')}
       </div>
       <div class="prod-body">
         <div class="name">${p.name}</div>
@@ -280,13 +287,18 @@
   const adminProductList = document.getElementById('adminProductList');
   const productForm = document.getElementById('productForm');
   let selectedProductImage = null;
+  let selectedProductIcon = null;
 
   function saveProducts(){
     try {
       localStorage.setItem('merocartProducts', JSON.stringify(products));
     } catch (error) {
       try {
-        const lightweightProducts = products.map(product => ({...product, image: null}));
+        const lightweightProducts = products.map(product => ({
+          ...product,
+          image: null,
+          icon: product.icon && product.icon.startsWith('data:image/') ? 'bag' : product.icon
+        }));
         localStorage.setItem('merocartProducts', JSON.stringify(lightweightProducts));
       } catch (fallbackError) {
         localStorage.removeItem('merocartProducts');
@@ -307,9 +319,11 @@
   function resetProductForm(){
     productForm.reset();
     selectedProductImage = null;
+    selectedProductIcon = null;
     const imagePreview = document.getElementById('productImagePreview');
     imagePreview.removeAttribute('src');
     imagePreview.classList.remove('visible');
+    document.getElementById('productIconFile').value = '';
     document.getElementById('productIndex').value = '';
     document.getElementById('adminFormTitle').textContent = 'Add product';
     document.getElementById('productSubmit').textContent = 'Add product';
@@ -368,7 +382,7 @@
       price: Number(document.getElementById('productPrice').value),
       old: Number(document.getElementById('productOld').value) || null,
       tag: document.getElementById('productTag').value || null,
-      rating: 4.5, reviews: 0, color: '#DCE7DD', icon: document.getElementById('productIcon').value, image: selectedProductImage,
+      rating: 4.5, reviews: 0, color: '#DCE7DD',       icon: selectedProductIcon || document.getElementById('productIcon').value, image: selectedProductImage,
       isArrival: document.getElementById('productTag').value === 'New Arrivals'
     };
     try {
@@ -394,6 +408,18 @@
     });
     reader.readAsDataURL(file);
   });
+  document.getElementById('productIconFile').addEventListener('change', event => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+      selectedProductIcon = reader.result;
+    });
+    reader.readAsDataURL(file);
+  });
+  document.getElementById('productIcon').addEventListener('change', () => {
+    selectedProductIcon = null;
+  });
   adminProductList.addEventListener('click', async event => {
     const editIndex = event.target.dataset.edit;
     const deleteIndex = event.target.dataset.delete;
@@ -404,7 +430,13 @@
       document.getElementById('productPrice').value = product.price;
       document.getElementById('productOld').value = product.old || '';
       document.getElementById('productTag').value = product.tag || '';
-      document.getElementById('productIcon').value = product.icon;
+      if (product.icon && product.icon.startsWith('data:image/')) {
+        selectedProductIcon = product.icon;
+        document.getElementById('productIcon').value = 'bag';
+      } else {
+        selectedProductIcon = null;
+        document.getElementById('productIcon').value = product.icon;
+      }
       selectedProductImage = product.image || null;
       const imagePreview = document.getElementById('productImagePreview');
       if (selectedProductImage) { imagePreview.src = selectedProductImage; imagePreview.classList.add('visible'); }
