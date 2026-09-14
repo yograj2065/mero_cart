@@ -46,7 +46,9 @@
     const {data, error} = await supabaseClient.from('products').select('*').order('created_at');
     if (error) { console.warn('Supabase products unavailable; using local catalogue.', error.message); return; }
     if (data.length) {
-      products = data.map(toProduct);
+      const uniqueProducts = new Map();
+      data.forEach(row => uniqueProducts.set(row.name, toProduct(row)));
+      products = Array.from(uniqueProducts.values());
     } else {
       const {data: seeded, error: seedError} = await supabaseClient.from('products').insert(defaultProducts.map(toRow)).select();
       if (seedError) { console.warn('Supabase catalogue is empty and could not be seeded.', seedError.message); return; }
