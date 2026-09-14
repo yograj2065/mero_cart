@@ -349,7 +349,7 @@
 <div class="admin-overlay" id="adminOverlay" aria-hidden="true">
   <div class="admin-modal">
     <button class="admin-close" id="adminClose" aria-label="Close admin">&times;</button>
-    <form class="admin-login" id="adminLoginForm" onsubmit="event.preventDefault(); if (document.getElementById('adminUsername').value === 'yog' && document.getElementById('adminPassword').value === 'yograj@123') { this.hidden = true; document.getElementById('adminDashboard').hidden = false; } else { document.getElementById('adminError').textContent = 'Incorrect username or password.'; }">
+    <form class="admin-login" id="adminLoginForm">
       <h2>Store admin</h2>
       <p>Sign in to manage products and review the store snapshot.</p>
       <div class="admin-field"><label for="adminUsername">Username</label><input id="adminUsername" autocomplete="username" required></div>

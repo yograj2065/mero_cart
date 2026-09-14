@@ -338,6 +338,10 @@
   productForm.addEventListener('submit', async event => {
     event.preventDefault();
     const productError = document.getElementById('productError');
+    const productSubmit = document.getElementById('productSubmit');
+    if (productSubmit.disabled) return;
+    productSubmit.disabled = true;
+    productSubmit.textContent = 'Saving...';
     productError.textContent = '';
     const index = document.getElementById('productIndex').value;
     const product = {
@@ -353,6 +357,9 @@
       saveProducts(); renderProducts(); renderAdminProducts(); resetProductForm();
     } catch (error) {
       productError.textContent = `Could not save to Supabase: ${error.message}`;
+    } finally {
+      productSubmit.disabled = false;
+      productSubmit.textContent = document.getElementById('productIndex').value === '' ? 'Add product' : 'Save changes';
     }
   });
   document.getElementById('productImage').addEventListener('change', event => {
