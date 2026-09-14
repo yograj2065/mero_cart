@@ -354,15 +354,6 @@
     }
   });
   document.getElementById('adminLogout').addEventListener('click', openAdmin);
-  document.getElementById('adminReset').addEventListener('click', async () => {
-    if (!window.confirm('Restore the original catalogue?')) return;
-    if (supabaseClient) await supabaseClient.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-    if (supabaseClient) {
-      const {data} = await supabaseClient.from('products').insert(defaultProducts.map(toRow)).select();
-      products = data ? data.map(toProduct) : defaultProducts.map(product => ({...product}));
-    } else products = defaultProducts.map(product => ({...product}));
-    saveProducts(); renderProducts(); renderArrivals(); renderAdminProducts(); resetProductForm();
-  });
   productForm.addEventListener('submit', async event => {
     event.preventDefault();
     const productError = document.getElementById('productError');
