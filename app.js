@@ -254,6 +254,13 @@
   const savedPaymentMethod = localStorage.getItem('merocartPaymentMethod');
   if (savedPaymentMethod === 'Online eSewa') cartPaymentMethodEl.value = savedPaymentMethod;
   function saveCart(){ localStorage.setItem('merocartCart', JSON.stringify(cartItems)); }
+  function clearCartAfterOrder(){
+    cartItems = [];
+    saveCart();
+    renderCart();
+    cartOverlay.classList.remove('open');
+    cartOverlay.setAttribute('aria-hidden', 'true');
+  }
   function renderCart(){
     const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
     const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -319,13 +326,17 @@
     }, 1000);
   }
   cartOrderEl.addEventListener('click', event => {
-    if (cartPaymentMethodEl.value !== 'Online eSewa') return;
+    if (cartPaymentMethodEl.value !== 'Online eSewa') {
+      if (cartItems.length) clearCartAfterOrder();
+      return;
+    }
     event.preventDefault();
     if (!cartItems.length) return;
     openPaymentModal();
   });
   paymentProceed.addEventListener('click', () => {
     window.open(cartOrderEl.href, '_blank', 'noopener');
+    clearCartAfterOrder();
     closePaymentModal();
   });
   paymentModalClose.addEventListener('click', closePaymentModal);
