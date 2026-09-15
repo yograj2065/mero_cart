@@ -403,7 +403,19 @@
   // ---- Mobile menu ----
   const burgerBtn = document.getElementById('burgerBtn');
   const mobileMenu = document.getElementById('mobileMenu');
-  burgerBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  function closeMobileMenu(){
+    mobileMenu.classList.remove('open');
+    burgerBtn.setAttribute('aria-expanded', 'false');
+  }
+  burgerBtn.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    burgerBtn.setAttribute('aria-expanded', String(isOpen));
+  });
+  mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMobileMenu));
+  document.addEventListener('pointerdown', event => {
+    if (mobileMenu.classList.contains('open') && !mobileMenu.contains(event.target) && !burgerBtn.contains(event.target)) closeMobileMenu();
+  });
+  window.addEventListener('scroll', closeMobileMenu, {passive: true});
 
   // ---- Scroll reveal (restrained: section headers + key blocks only) ----
   const revealEls = document.querySelectorAll('.reveal');
