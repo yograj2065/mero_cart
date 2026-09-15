@@ -139,7 +139,20 @@
   let cartItems = JSON.parse(localStorage.getItem('merocartCart') || '[]');
   let wishlist = JSON.parse(localStorage.getItem('merocartWishlist') || '[]');
   const grid = document.getElementById('prodGrid');
+  const wishlistCountEl = document.getElementById('wishlistCount');
+  const wishlistItemsEl = document.getElementById('wishlistItems');
   function saveWishlist(){ localStorage.setItem('merocartWishlist', JSON.stringify(wishlist)); }
+  function renderWishlist(){
+    const savedProducts = products.filter(product => wishlist.includes(product.name));
+    wishlistCountEl.textContent = savedProducts.length;
+    wishlistItemsEl.innerHTML = savedProducts.length ? savedProducts.map(product => `
+      <div class="wishlist-item">
+        <div class="wishlist-item-image">${product.image ? `<img src="${product.image}" alt="${product.name}">` : productIconMarkup(product)}</div>
+        <div class="wishlist-item-info"><strong>${product.name}</strong><span>Rs. ${product.price.toLocaleString()}</span></div>
+        <button class="wishlist-add" type="button" data-wishlist-add="${product.name}">Add</button>
+        <button class="wishlist-remove" type="button" data-wishlist-remove="${product.name}" aria-label="Remove ${product.name} from wishlist">&times;</button>
+      </div>`).join('') : '<div class="cart-empty">Your saved items will appear here.</div>';
+  }
   function renderProducts(){
     grid.innerHTML = '';
     products.forEach((p) => {
@@ -174,6 +187,7 @@
       h.classList.toggle('liked', !isSaved);
       h.dataset.liked = String(!isSaved);
       h.setAttribute('aria-label', !isSaved ? 'Remove from wishlist' : 'Save to wishlist');
+      renderWishlist();
     });
 
     card.querySelector('.add-btn').addEventListener('click', (e) => {
@@ -192,6 +206,7 @@
     });
   }
   renderProducts();
+  renderWishlist();
   renderArrivals();
   renderOffers();
 
@@ -350,6 +365,33 @@
     const index = event.target.dataset.removeCart;
     if (index === undefined) return;
     cartItems.splice(Number(index), 1); saveCart(); renderCart();
+  });
+  const wishlistOverlay = document.getElementById('wishlistOverlay');
+  document.getElementById('wishlistIcon').addEventListener('click', () => {
+    renderWishlist();
+    wishlistOverlay.classList.add('open');
+    wishlistOverlay.setAttribute('aria-hidden', 'false');
+  });
+  document.getElementById('wishlistClose').addEventListener('click', () => {
+    wishlistOverlay.classList.remove('open');
+    wishlistOverlay.setAttribute('aria-hidden', 'true');
+  });
+  wishlistOverlay.addEventListener('click', event => {
+    if (event.target === wishlistOverlay) document.getElementById('wishlistClose').click();
+  });
+  wishlistItemsEl.addEventListener('click', event => {
+    const removeName = event.target.dataset.wishlistRemove;
+    const addName = event.target.dataset.wishlistAdd;
+    if (removeName) {
+      wishlist = wishlist.filter(name => name !== removeName);
+      saveWishlist();
+      renderProducts();
+      renderWishlist();
+    }
+    if (addName) {
+      const product = products.find(item => item.name === addName);
+      if (product) addToCart(product);
+    }
   });
 
   // ---- Sticky nav shadow ----

@@ -36,7 +36,10 @@
     </nav>
     <div class="navicons">
       <svg class="profile-ic" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.6c0 4-6.4 9-8.3 10.4a.8.8 0 0 1-.9 0C9.6 17.6 3.2 12.6 3.2 8.6a5 5 0 0 1 9-3 5 5 0 0 1 8.6 3Z"/></svg>
+      <button class="wishlist-icon" id="wishlistIcon" type="button" aria-label="Open wishlist">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.6c0 4-6.4 9-8.3 10.4a.8.8 0 0 1-.9 0C9.6 17.6 3.2 12.6 3.2 8.6a5 5 0 0 1 9-3 5 5 0 0 1 8.6 3Z"/></svg>
+        <span class="wishlist-count" id="wishlistCount">0</span>
+      </button>
       <a href="#" class="cart-wrap" id="cartIcon">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21.5 8H6"/><circle cx="9" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg>
         <span class="cart-count" id="cartCount">2</span>
@@ -340,6 +343,13 @@
       <a class="btn btn-whatsapp cart-order" id="cartOrder" href="#" target="_blank" rel="noopener">Place order on WhatsApp</a>
       <p class="cart-note" id="cartPaymentNote">Pay when your order is delivered.</p>
     </div>
+  </aside>
+</div>
+
+<div class="wishlist-overlay" id="wishlistOverlay" aria-hidden="true">
+  <aside class="wishlist-drawer" aria-label="Wishlist">
+    <div class="cart-head"><h2>Saved items</h2><button class="cart-close" id="wishlistClose" type="button" aria-label="Close wishlist">&times;</button></div>
+    <div class="wishlist-items" id="wishlistItems"></div>
   </aside>
 </div>
 
